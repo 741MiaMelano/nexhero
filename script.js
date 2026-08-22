@@ -247,7 +247,7 @@
     if(mode==='intro'){
       particleAlpha=0;
       setSvgMood(1);
-      if(now-introStart>1600) enterAuto(now);
+      if(now-introStart>1600){ if(pointerInside) enterFollow(now); else enterAuto(now); }
       return;
     }
     if(mode==='auto'){
@@ -285,7 +285,7 @@
     }
   }
 
-  function physics(){
+  function physics(now){
     for(let i=0;i<particles.length;i++){
       const p=particles[i];
       if(mode==='explosion'){
@@ -343,7 +343,7 @@
 
   function frame(now){
     updateState(now);
-    physics();
+    physics(now);
     draw();
     requestAnimationFrame(frame);
   }
@@ -352,7 +352,7 @@
   art.addEventListener('pointerenter',e=>{
     pointerInside=true;
     const r=art.getBoundingClientRect();mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;
-    if(!pointerDown) enterFollow(performance.now());
+    if(!pointerDown && mode!=='intro') enterFollow(performance.now());
   });
   art.addEventListener('pointermove',e=>{
     const r=art.getBoundingClientRect();
