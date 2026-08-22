@@ -16,6 +16,7 @@
     <nav aria-label="Primary"><a href="#projects" data-en="Projects" data-zh="项目">Projects</a><a href="#notes" data-en="Notes" data-zh="札记">Notes</a><a href="#lab" data-en="Lab" data-zh="实验室">Lab</a><a href="#about" data-en="About" data-zh="关于">About</a></nav>
     <button id="lang" class="icon-btn" type="button" aria-label="Switch language">中文</button>
   </header>
+
   <main id="top">
     <section class="hero">
       <div class="coords">47.3769° N · 8.5417° E</div>
@@ -27,39 +28,138 @@
         <p class="intro" data-en="We build useful software, explore AI systems and document ideas worth keeping. Quietly, precisely, for the long term." data-zh="我们构建实用的软件，探索 AI 系统，并记录值得长期保留的想法。安静、精确、长期主义。">We build useful software, explore AI systems and document ideas worth keeping. Quietly, precisely, for the long term.</p>
         <a class="cta" href="#projects"><span data-en="Explore projects" data-zh="浏览项目">Explore projects</span><span class="arrow">→</span></a>
       </div>
-      <div class="hero-art" id="heroArt" aria-label="Interactive NexHero system field">
+
+      <div class="hero-art" id="heroArt" aria-label="Interactive NexHero system console">
         <canvas id="fieldParticles" class="particle-canvas" aria-hidden="true"></canvas>
-        <svg class="network" id="networkField" viewBox="0 0 700 580" fill="none" aria-hidden="true">
+        <svg class="network ai-console" id="networkField" viewBox="0 0 700 580" fill="none" aria-hidden="true">
           <defs>
             <filter id="fieldWarp" x="-20%" y="-20%" width="140%" height="140%">
-              <feTurbulence id="fieldNoise" type="fractalNoise" baseFrequency=".012 .018" numOctaves="2" seed="8" result="noise"/>
+              <feTurbulence id="fieldNoise" type="fractalNoise" baseFrequency=".009 .012" numOctaves="2" seed="8" result="noise"/>
               <feDisplacementMap id="fieldDisplace" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"/>
             </filter>
-            <radialGradient id="nodeGlow"><stop offset="0" stop-color="#4d7cff" stop-opacity=".26"/><stop offset="1" stop-color="#4d7cff" stop-opacity="0"/></radialGradient>
+            <linearGradient id="panelStroke" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#d7dfe4"/>
+              <stop offset="1" stop-color="#bcc9d0"/>
+            </linearGradient>
+            <linearGradient id="panelFill" x1="0" y1="0" x2="0" y2="1">
+              <stop stop-color="#f9fbfb" stop-opacity=".92"/>
+              <stop offset="1" stop-color="#edf2f3" stop-opacity=".98"/>
+            </linearGradient>
+            <linearGradient id="chipFill" x1="0" y1="0" x2="1" y2="1">
+              <stop stop-color="#f5f8ff"/>
+              <stop offset="1" stop-color="#e6ecff"/>
+            </linearGradient>
+            <radialGradient id="coreGlow" cx="50%" cy="50%" r="55%">
+              <stop offset="0" stop-color="#4d7cff" stop-opacity=".18"/>
+              <stop offset="1" stop-color="#4d7cff" stop-opacity="0"/>
+            </radialGradient>
           </defs>
           <g id="morphLayer" filter="url(#fieldWarp)">
-            <circle cx="360" cy="270" r="122" fill="url(#nodeGlow)" opacity=".38"/>
-            <g class="orbit"><circle cx="360" cy="270" r="154" stroke="#c8d2d8" stroke-dasharray="4 7"/><circle cx="360" cy="116" r="4" fill="#4d7cff"/><circle cx="514" cy="270" r="4" fill="#84dcc8"/><circle cx="360" cy="424" r="4" fill="#4d7cff"/></g>
-            <g class="orbit reverse"><ellipse cx="360" cy="270" rx="218" ry="95" stroke="#d6dee2" transform="rotate(-18 360 270)"/><circle cx="157" cy="340" r="3" fill="#4d7cff"/><circle cx="564" cy="199" r="3" fill="#4d7cff"/></g>
-            <circle cx="360" cy="270" r="77" stroke="#d8e0e3"/>
-            <circle class="pulse" cx="360" cy="270" r="32" fill="#4d7cff" fill-opacity=".035" stroke="#4d7cff" stroke-opacity=".32"/>
-            <path class="dash" d="M38 145L171 236L254 112L360 270L512 105L662 198M78 438L205 331L360 270L481 402L625 317M171 236L205 331L481 402M254 112L512 105L625 317" stroke="#cfd9de"/>
-            <g class="field-nodes" fill="#4d7cff"><circle cx="38" cy="145" r="3"/><circle cx="171" cy="236" r="3"/><circle cx="254" cy="112" r="3"/><circle cx="512" cy="105" r="3"/><circle cx="662" cy="198" r="3"/><circle cx="78" cy="438" r="3"/><circle cx="205" cy="331" r="3"/><circle cx="481" cy="402" r="3"/><circle cx="625" cy="317" r="3"/></g>
-            <path d="M323 270H397M360 233V307" stroke="#4d7cff" stroke-width="1.5"/><rect x="354" y="264" width="12" height="12" fill="#4d7cff"/>
-            <path d="M104 88H187M104 88V171M616 454H533M616 454V371" stroke="#9fb0ba" stroke-opacity=".35"/>
+            <rect x="118" y="84" width="464" height="362" rx="28" stroke="#d7e0e3" stroke-opacity=".55"/>
+            <circle cx="350" cy="268" r="146" fill="url(#coreGlow)" opacity=".85"/>
+
+            <g class="guide-lines">
+              <path class="flow-line" d="M350 268C311 208 256 182 198 156"/>
+              <path class="flow-line" d="M350 268C404 212 470 191 524 164"/>
+              <path class="flow-line" d="M350 268C303 330 257 367 200 393"/>
+              <path class="flow-line" d="M350 268C401 325 465 351 523 388"/>
+              <path class="trace-line" d="M242 268H458"/>
+              <path class="trace-line" d="M350 160V378"/>
+              <circle class="signal-dot" cx="198" cy="156" r="5"/>
+              <circle class="signal-dot mint" cx="524" cy="164" r="5"/>
+              <circle class="signal-dot" cx="200" cy="393" r="5"/>
+              <circle class="signal-dot" cx="523" cy="388" r="5"/>
+            </g>
+
+            <g id="panelA" class="interactive-piece panel-group">
+              <rect x="86" y="92" width="170" height="104" rx="20" fill="url(#panelFill)" stroke="url(#panelStroke)"/>
+              <text x="108" y="118" class="panel-kicker">MODEL STACK</text>
+              <rect x="108" y="134" width="126" height="12" rx="6" class="panel-bar"/>
+              <rect x="108" y="154" width="84" height="10" rx="5" class="panel-bar light"/>
+              <rect x="108" y="171" width="104" height="10" rx="5" class="panel-bar"/>
+              <circle cx="222" cy="164" r="14" class="panel-node"/>
+            </g>
+
+            <g id="panelB" class="interactive-piece panel-group">
+              <rect x="444" y="98" width="170" height="104" rx="20" fill="url(#panelFill)" stroke="url(#panelStroke)"/>
+              <text x="466" y="124" class="panel-kicker">INFERENCE PATH</text>
+              <path d="M468 166L500 146L532 156L564 136L590 146" class="mini-route"/>
+              <circle cx="468" cy="166" r="4" class="route-dot"/>
+              <circle cx="500" cy="146" r="4" class="route-dot"/>
+              <circle cx="532" cy="156" r="4" class="route-dot mint"/>
+              <circle cx="564" cy="136" r="4" class="route-dot"/>
+              <circle cx="590" cy="146" r="4" class="route-dot"/>
+            </g>
+
+            <g id="panelC" class="interactive-piece panel-group">
+              <rect x="88" y="350" width="172" height="108" rx="20" fill="url(#panelFill)" stroke="url(#panelStroke)"/>
+              <text x="110" y="376" class="panel-kicker">MEMORY CACHE</text>
+              <rect x="110" y="392" width="54" height="40" rx="10" class="cache-block"/>
+              <rect x="172" y="392" width="54" height="40" rx="10" class="cache-block soft"/>
+              <rect x="110" y="438" width="116" height="8" rx="4" class="panel-bar light"/>
+            </g>
+
+            <g id="panelD" class="interactive-piece panel-group">
+              <rect x="446" y="344" width="170" height="114" rx="20" fill="url(#panelFill)" stroke="url(#panelStroke)"/>
+              <text x="468" y="370" class="panel-kicker">AGENT NODES</text>
+              <rect x="468" y="386" width="122" height="44" rx="14" class="agent-box"/>
+              <circle cx="486" cy="408" r="7" class="panel-node"/>
+              <circle cx="528" cy="408" r="7" class="panel-node mint"/>
+              <circle cx="570" cy="408" r="7" class="panel-node"/>
+              <path d="M493 408H521M535 408H563" class="agent-link"/>
+              <rect x="468" y="438" width="92" height="8" rx="4" class="panel-bar"/>
+            </g>
+
+            <g id="coreSystem" class="interactive-piece core-system">
+              <circle cx="350" cy="268" r="108" class="core-ring outer"/>
+              <circle cx="350" cy="268" r="78" class="core-ring middle"/>
+              <circle cx="350" cy="268" r="46" class="core-ring inner"/>
+              <path d="M295 268H405M350 213V323" class="crosshair"/>
+              <g class="core-chip">
+                <rect x="306" y="224" width="88" height="88" rx="24" fill="url(#chipFill)" stroke="#cbd6ff"/>
+                <rect x="326" y="244" width="48" height="48" rx="13" fill="#eff4ff" stroke="#afc2ff"/>
+                <path d="M336 260H364M336 272H354M336 284H361" class="chip-lines"/>
+                <path d="M320 220V204M338 220V204M356 220V204M374 220V204M394 242H410M394 260H410M394 278H410M320 316V332M338 316V332M356 316V332M374 316V332M290 242H306M290 260H306M290 278H306" class="chip-pins"/>
+              </g>
+              <g class="core-brackets">
+                <path d="M265 228H248V245"/>
+                <path d="M435 228H452V245"/>
+                <path d="M265 308H248V291"/>
+                <path d="M435 308H452V291"/>
+              </g>
+            </g>
           </g>
         </svg>
-        <div class="interaction-hint" data-en="DRAG · CLICK · DBLCLICK" data-zh="拖拽 · 点击 · 双击重组">DRAG · CLICK · DBLCLICK</div>
-        <div class="system-card">SYSTEM <b>ONLINE</b><br>GRID 12 / NODE 09<br>NH-LAB · 2026</div>
+        <div class="interaction-hint" data-en="MOVE · DRAG · DBLCLICK" data-zh="移动 · 拖拽 · 双击重组">MOVE · DRAG · DBLCLICK</div>
+        <div class="system-card">SYSTEM <b>ONLINE</b><br>AI CORE / NODE 04<br>NH-LAB · 2026</div>
         <div class="lab-label">Swiss Future Lab</div>
       </div>
     </section>
+
     <div class="grid">
-      <section class="section" id="projects"><div class="section-title"><h2>01 <b>/</b> <span data-en="Projects" data-zh="项目">Projects</span></h2><a href="#projects" data-en="View all →" data-zh="查看全部 →">View all →</a></div><div class="projects"><article class="card"><div class="thumb translator"><div class="mini-window"><strong>AI Translator</strong><div class="mini-controls"><i></i><i></i></div><div class="mini-button"></div></div></div><div class="card-body"><span class="code">NH-001</span><h3 data-en="AI Translator Desktop" data-zh="AI 桌面翻译器">AI Translator Desktop</h3><p data-en="A placeholder for a local-first translation project and future release notes." data-zh="本地优先翻译项目及未来版本记录的占位展示。">A placeholder for a local-first translation project and future release notes.</p><span class="tag">SOFTWARE</span></div></article><article class="card"><div class="thumb cube"><svg viewBox="0 0 120 120" fill="none"><path d="M60 10L105 35V85L60 110L15 85V35L60 10ZM60 10V60M105 35L60 60L15 35M60 60V110" stroke="#84dcc8"/><path d="M38 23L82 48V72L38 97V47L82 23V97" stroke="#4d7cff" opacity=".55"/></svg></div><div class="card-body"><span class="code">NH-002</span><h3 data-en="Open Source" data-zh="开源">Open Source</h3><p data-en="Useful libraries, small tools and transparent experiments will live here." data-zh="这里将放置实用库、小工具与透明的实验项目。">Useful libraries, small tools and transparent experiments will live here.</p><span class="tag mint">OPEN SOURCE</span></div></article><article class="card"><div class="thumb particles"></div><div class="card-body"><span class="code">NH-003</span><h3 data-en="Experiments" data-zh="实验">Experiments</h3><p data-en="Unfinished ideas, prototypes and research notes from the edge of the workbench." data-zh="工作台边缘那些尚未完成的想法、原型与研究记录。">Unfinished ideas, prototypes and research notes from the edge of the workbench.</p><span class="tag">RESEARCH</span></div></article></div></section>
-      <section class="section" id="notes"><div class="section-title"><h2>02 <b>/</b> <span data-en="Notes" data-zh="札记">Notes</span></h2><a href="#notes" data-en="Archive →" data-zh="归档 →">Archive →</a></div><article class="note"><time>2026 · 08</time><h3 data-en="On building reliable AI systems" data-zh="关于构建可靠的 AI 系统">On building reliable AI systems</h3><p data-en="Reliability is a property of systems, not slogans." data-zh="可靠性属于系统，而不是口号。">Reliability is a property of systems, not slogans.</p></article><article class="note"><time>2026 · 08</time><h3 data-en="The value of local-first software" data-zh="本地优先软件的价值">The value of local-first software</h3><p data-en="Fast, private and pleasantly boring infrastructure." data-zh="快速、私密，以及令人安心地无聊的基础设施。">Fast, private and pleasantly boring infrastructure.</p></article><article class="note"><time>2026 · 08</time><h3 data-en="Simplicity in a complex world" data-zh="复杂世界里的简单">Simplicity in a complex world</h3><p data-en="Good interfaces hide complexity without pretending it does not exist." data-zh="好的界面隐藏复杂性，但从不假装复杂性不存在。">Good interfaces hide complexity without pretending it does not exist.</p></article></section>
-      <section class="section" id="lab"><div class="section-title"><h2>03 <b>/</b> <span data-en="Lab" data-zh="实验室">Lab</span></h2><a href="#lab" data-en="Enter →" data-zh="进入 →">Enter →</a></div><div class="lab-photo"><div class="bench"></div></div><p class="lab-copy" data-en="The lab is where prototypes get built, measured, broken and rebuilt. Placeholder experiments will appear here over time." data-zh="实验室用于构建、测量、拆解并重新构建原型。未来的实验项目会逐渐出现在这里。">The lab is where prototypes get built, measured, broken and rebuilt. Placeholder experiments will appear here over time.</p><a class="ghost" href="#lab" data-en="Explore the lab" data-zh="探索实验室">Explore the lab</a></section>
+      <section class="section" id="projects">
+        <div class="section-title"><h2>01 <b>/</b> <span data-en="Projects" data-zh="项目">Projects</span></h2><a href="#projects" data-en="View all →" data-zh="查看全部 →">View all →</a></div>
+        <div class="projects">
+          <article class="card"><div class="thumb translator"><div class="mini-window"><strong>AI Translator</strong><div class="mini-controls"><i></i><i></i></div><div class="mini-button"></div></div></div><div class="card-body"><span class="code">NH-001</span><h3 data-en="AI Translator Desktop" data-zh="AI 桌面翻译器">AI Translator Desktop</h3><p data-en="A placeholder for a local-first translation project and future release notes." data-zh="本地优先翻译项目及未来版本记录的占位展示。">A placeholder for a local-first translation project and future release notes.</p><span class="tag">SOFTWARE</span></div></article>
+          <article class="card"><div class="thumb cube"><svg viewBox="0 0 120 120" fill="none"><path d="M60 10L105 35V85L60 110L15 85V35L60 10ZM60 10V60M105 35L60 60L15 35M60 60V110" stroke="#84dcc8"/><path d="M38 23L82 48V72L38 97V47L82 23V97" stroke="#4d7cff" opacity=".55"/></svg></div><div class="card-body"><span class="code">NH-002</span><h3 data-en="Open Source" data-zh="开源">Open Source</h3><p data-en="Useful libraries, small tools and transparent experiments will live here." data-zh="这里将放置实用库、小工具与透明的实验项目。">Useful libraries, small tools and transparent experiments will live here.</p><span class="tag mint">OPEN SOURCE</span></div></article>
+          <article class="card"><div class="thumb particles"></div><div class="card-body"><span class="code">NH-003</span><h3 data-en="Experiments" data-zh="实验">Experiments</h3><p data-en="Unfinished ideas, prototypes and research notes from the edge of the workbench." data-zh="工作台边缘那些尚未完成的想法、原型与研究记录。">Unfinished ideas, prototypes and research notes from the edge of the workbench.</p><span class="tag">RESEARCH</span></div></article>
+        </div>
+      </section>
+      <section class="section" id="notes">
+        <div class="section-title"><h2>02 <b>/</b> <span data-en="Notes" data-zh="札记">Notes</span></h2><a href="#notes" data-en="Archive →" data-zh="归档 →">Archive →</a></div>
+        <article class="note"><time>2026 · 08</time><h3 data-en="On building reliable AI systems" data-zh="关于构建可靠的 AI 系统">On building reliable AI systems</h3><p data-en="Reliability is a property of systems, not slogans." data-zh="可靠性属于系统，而不是口号。">Reliability is a property of systems, not slogans.</p></article>
+        <article class="note"><time>2026 · 08</time><h3 data-en="The value of local-first software" data-zh="本地优先软件的价值">The value of local-first software</h3><p data-en="Fast, private and pleasantly boring infrastructure." data-zh="快速、私密，以及令人安心地无聊的基础设施。">Fast, private and pleasantly boring infrastructure.</p></article>
+        <article class="note"><time>2026 · 08</time><h3 data-en="Simplicity in a complex world" data-zh="复杂世界里的简单">Simplicity in a complex world</h3><p data-en="Good interfaces hide complexity without pretending it does not exist." data-zh="好的界面隐藏复杂性，但从不假装复杂性不存在。">Good interfaces hide complexity without pretending it does not exist.</p></article>
+      </section>
+      <section class="section" id="lab">
+        <div class="section-title"><h2>03 <b>/</b> <span data-en="Lab" data-zh="实验室">Lab</span></h2><a href="#lab" data-en="Enter →" data-zh="进入 →">Enter →</a></div>
+        <div class="lab-photo"><div class="bench"></div></div>
+        <p class="lab-copy" data-en="The lab is where prototypes get built, measured, broken and rebuilt. Placeholder experiments will appear here over time." data-zh="实验室用于构建、测量、拆解并重新构建原型。未来的实验项目会逐渐出现在这里。">The lab is where prototypes get built, measured, broken and rebuilt. Placeholder experiments will appear here over time.</p>
+        <a class="ghost" href="#lab" data-en="Explore the lab" data-zh="探索实验室">Explore the lab</a>
+      </section>
     </div>
   </main>
+
   <footer id="about"><div><strong style="color:var(--ink)">NEXHERO</strong><br><span data-en="Independent. Swiss. Global." data-zh="独立 · 瑞士 · 全球">Independent. Swiss. Global.</span></div><div class="footer-links"><a href="#about" data-en="Privacy" data-zh="隐私">Privacy</a><a href="mailto:hello@nexhero.ch" data-en="Contact" data-zh="联系">Contact</a></div><div class="elsewhere"><strong data-en="Elsewhere" data-zh="其他站点">Elsewhere</strong><a href="https://nexjoy.nl/"><span class="dot blue"></span>NEXJOY ↗</a><a href="https://dorogogo.de/"><span class="dot mint"></span>DOROGOGO ↗</a></div></footer>
 </div>
 <script src="/script.js"></script>
