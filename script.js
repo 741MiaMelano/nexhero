@@ -2,6 +2,7 @@
   const btn=document.getElementById('lang');
   const nodes=[...document.querySelectorAll('[data-en]')];
   let lang=localStorage.getItem('nexhero-lang')||((navigator.language||'').toLowerCase().startsWith('zh')?'zh':'en');
+
   function apply(){
     document.documentElement.lang=lang==='zh'?'zh-CN':'en';
     nodes.forEach(el=>el.textContent=el.dataset[lang]);
@@ -18,27 +19,56 @@
   const disp=document.getElementById('fieldDisplace');
   const noise=document.getElementById('fieldNoise');
   const morph=document.getElementById('morphLayer');
-  const orbits=[...network.querySelectorAll('.orbit')];
-  const dash=network.querySelector('.dash');
-  const pulse=network.querySelector('.pulse');
-  const nodeEls=[...network.querySelectorAll('.field-nodes circle, .orbit circle')];
-  const fine=art&&network&&canvas&&matchMedia('(pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const orbits=network?[...network.querySelectorAll('.orbit')]:[];
+  const dash=network?.querySelector('.dash');
+  const pulse=network?.querySelector('.pulse');
+  const nodeEls=network?[...network.querySelectorAll('.field-nodes circle, .orbit circle')]:[];
+  const fine=art&&network&&canvas&&disp&&noise&&matchMedia('(pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if(fine){
+    // Keep the diagram composition stable at rest. Only the dash flow and pulse
+    // remain as ambient motion; orbit geometry no longer rotates by itself.
+    const stableStyle=document.createElement('style');
+    stableStyle.textContent=`
+      .network .orbit,.network .orbit.reverse{animation:none!important}
+      .network .dash{animation-duration:30s!important}
+      .hero-art.snap-back .network,
+      .hero-art.snap-back .network .orbit,
+      .hero-art.snap-back .network .dash,
+      .hero-art.snap-back .network .pulse,
+      .hero-art.snap-back .field-nodes circle,
+      .hero-art.snap-back .orbit circle{
+        transition:transform .15s cubic-bezier(.18,.9,.22,1),opacity .15s ease!important;
+      }
+    `;
+    document.head.appendChild(stableStyle);
+
     const ctx=canvas.getContext('2d');
     let dpr=1,w=0,h=0;
-    let drag=false,rebuilding=false;
+    let drag=false,rebuilding=false,dragged=false;
+    let dragStart=0,dragDistance=0;
     let lastX=0,lastY=0,lastT=performance.now();
-    let cumulative=0,vortex=0;
+    let vortex=0;
     let warp=0,warpTarget=0,freq=.014;
+    let suppressClickUntil=0,clickTimer=null;
     const viewBox={w:700,h:580};
     const particles=[];
-    const baseNodes=nodeEls.map(el=>({el,x:parseFloat(el.getAttribute('cx')),y:parseFloat(el.getAttribute('cy')),r:parseFloat(el.getAttribute('r'))||3}));
+    const baseNodes=nodeEls.map(el=>({
+      el,
+      x:parseFloat(el.getAttribute('cx')),
+      y:parseFloat(el.getAttribute('cy')),
+      r:parseFloat(el.getAttribute('r'))||3
+    }));
+
+    const clamp=(n,min,max)=>Math.min(max,Math.max(min,n));
+    const smoothstep=t=>{t=clamp(t,0,1);return t*t*(3-2*t)};
 
     function resize(){
       const r=art.getBoundingClientRect();
-      dpr=Math.min(devicePixelRatio||1,2);w=r.width;h=r.height;
-      canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
+      dpr=Math.min(devicePixelRatio||1,2);
+      w=r.width;h=r.height;
+      canvas.width=Math.round(w*dpr);
+      canvas.height=Math.round(h*dpr);
       canvas.style.width=w+'px';canvas.style.height=h+'px';
       ctx.setTransform(dpr,0,0,dpr,0,0);
     }
@@ -51,36 +81,49 @@
       return {x,y,nx:x/r.width-.5,ny:y/r.height-.5,sx:x/r.width*viewBox.w,sy:y/r.height*viewBox.h};
     }
 
-    function spawn(x,y,dx=0,dy=0,count=6,power=1){
+    function spawn(x,y,dx=0,dy=0,count=4,power=1){
       for(let i=0;i<count;i++){
         const a=Math.random()*Math.PI*2;
-        const speed=(.7+Math.random()*2.7)*power;
-        particles.push({x,y,vx:Math.cos(a)*speed+dx*.05,vy:Math.sin(a)*speed+dy*.05,life:1,size:1+Math.random()*2.1,len:6+Math.random()*18+Math.hypot(dx,dy)*.12,color:Math.random()>.23?'77,124,255':'132,220,200'});
+        const speed=(.55+Math.random()*2.1)*power;
+        particles.push({
+          x,y,
+          vx:Math.cos(a)*speed+dx*.035,
+          vy:Math.sin(a)*speed+dy*.035,
+          life:1,
+          size:.8+Math.random()*1.8,
+          len:5+Math.random()*13+Math.hypot(dx,dy)*.09,
+          color:Math.random()>.24?'77,124,255':'132,220,200'
+        });
       }
-      if(particles.length>420)particles.splice(0,particles.length-420);
+      if(particles.length>300)particles.splice(0,particles.length-300);
     }
 
     function setNodeTransforms(pointer,energy,dragVec){
-      const falloffMax=290;
+      const falloffMax=270;
       baseNodes.forEach(node=>{
         const dx=pointer.sx-node.x,dy=pointer.sy-node.y;
         const dist=Math.hypot(dx,dy)||1;
         const pull=Math.max(0,1-dist/falloffMax);
-        const attract=(18+energy*92)*pull;
-        const swirl=(8+energy*70)*pull;
         const nx=dx/dist,ny=dy/dist;
+
+        // Attraction and swirl are deliberately capped so the diagram deforms
+        // rather than exploding into unrelated pieces.
+        const attract=energy*54*pull;
+        const swirl=energy*30*pull;
         const tx=nx*attract+(-ny)*swirl*dragVec.spin;
         const ty=ny*attract+(nx)*swirl*dragVec.spin;
-        const scale=1+pull*energy*1.2;
+        const scale=1+pull*energy*.62;
+
         node.el.style.transform=`translate(${tx.toFixed(1)}px,${ty.toFixed(1)}px) scale(${scale.toFixed(3)})`;
-        node.el.style.opacity=(.72+pull*.28).toFixed(3);
+        node.el.style.opacity=(.8+pull*.2).toFixed(3);
       });
-      const orbitRot=dragVec.spin*(9+energy*38);
-      if(orbits[0])orbits[0].style.transform=`rotate(${orbitRot}deg) scale(${(1+energy*.08).toFixed(3)}) translate(${dragVec.dx*.02}px,${dragVec.dy*.02}px)`;
-      if(orbits[1])orbits[1].style.transform=`rotate(${-orbitRot*1.35}deg) scale(${(1-energy*.04).toFixed(3)}) translate(${dragVec.dx*-.018}px,${dragVec.dy*.018}px)`;
-      if(dash)dash.style.transform=`translate(${dragVec.dx*.03}px,${dragVec.dy*.03}px) rotate(${dragVec.spin*5.5}deg)`;
-      if(pulse)pulse.style.transform=`scale(${(1+energy*.18).toFixed(3)})`;
-      if(morph)morph.style.transform=`rotate(${dragVec.spin*(6+energy*16)}deg) scale(${(1+energy*.03).toFixed(3)})`;
+
+      const orbitRot=dragVec.spin*(3+energy*13);
+      if(orbits[0])orbits[0].style.transform=`rotate(${orbitRot.toFixed(2)}deg) scale(${(1+energy*.035).toFixed(3)})`;
+      if(orbits[1])orbits[1].style.transform=`rotate(${(-orbitRot*.78).toFixed(2)}deg) scale(${(1-energy*.018).toFixed(3)})`;
+      if(dash)dash.style.transform=`translate(${(dragVec.dx*.018).toFixed(2)}px,${(dragVec.dy*.018).toFixed(2)}px) rotate(${(dragVec.spin*2.2).toFixed(2)}deg)`;
+      if(pulse)pulse.style.transform=`scale(${(1+energy*.11).toFixed(3)})`;
+      if(morph)morph.style.transform=`rotate(${(dragVec.spin*(2.5+energy*5)).toFixed(2)}deg) scale(${(1+energy*.018).toFixed(3)})`;
     }
 
     function resetTransforms(){
@@ -91,76 +134,160 @@
       if(morph)morph.style.transform='';
     }
 
-    function burst(pointer,power=1){spawn(pointer.x,pointer.y,0,0,28,2.2*power)}
+    function burst(pointer,power=1){spawn(pointer.x,pointer.y,0,0,22,1.8*power)}
 
     function animate(){
-      warp+=(warpTarget-warp)*.12;
+      // Slow interpolation makes the distortion grow visibly instead of
+      // jumping straight to the maximum value.
+      const rate=drag?.065:.15;
+      warp+=(warpTarget-warp)*rate;
       disp.setAttribute('scale',warp.toFixed(2));
-      noise.setAttribute('baseFrequency',`${freq.toFixed(4)} ${(freq*1.35).toFixed(4)}`);
+      noise.setAttribute('baseFrequency',`${freq.toFixed(4)} ${(freq*1.32).toFixed(4)}`);
+
       ctx.clearRect(0,0,w,h);
       for(let i=particles.length-1;i>=0;i--){
         const p=particles[i],px=p.x,py=p.y;
-        p.x+=p.vx;p.y+=p.vy;p.vx*=.986;p.vy*=.986;p.life-=.018;
+        p.x+=p.vx;p.y+=p.vy;p.vx*=.986;p.vy*=.986;p.life-=.02;
         if(p.life<=0){particles.splice(i,1);continue}
-        const angle=Math.atan2(p.vy,p.vx),len=Math.max(4,p.len*p.life);
-        ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(px-Math.cos(angle)*len,py-Math.sin(angle)*len);
-        ctx.lineWidth=Math.max(.6,p.size*p.life);ctx.strokeStyle=`rgba(${p.color},${.78*p.life})`;ctx.shadowBlur=10;ctx.shadowColor=`rgba(${p.color},.35)`;ctx.stroke();
+        const angle=Math.atan2(p.vy,p.vx),len=Math.max(3,p.len*p.life);
+        ctx.beginPath();
+        ctx.moveTo(px,py);
+        ctx.lineTo(px-Math.cos(angle)*len,py-Math.sin(angle)*len);
+        ctx.lineWidth=Math.max(.55,p.size*p.life);
+        ctx.strokeStyle=`rgba(${p.color},${.7*p.life})`;
+        ctx.shadowBlur=8;
+        ctx.shadowColor=`rgba(${p.color},.3)`;
+        ctx.stroke();
       }
-      ctx.shadowBlur=0;requestAnimationFrame(animate);
+      ctx.shadowBlur=0;
+      requestAnimationFrame(animate);
     }
     requestAnimationFrame(animate);
 
     art.addEventListener('pointerdown',e=>{
       if(e.button!==0||rebuilding)return;
-      drag=true;art.classList.add('is-dragging');art.setPointerCapture(e.pointerId);
-      const p=local(e);lastX=p.x;lastY=p.y;lastT=performance.now();cumulative=0;vortex=0;warpTarget=20;freq=.015;burst(p,1.1);
+      drag=true;dragged=false;dragDistance=0;vortex=0;
+      dragStart=performance.now();
+      art.classList.add('is-dragging');
+      art.setPointerCapture(e.pointerId);
+      const p=local(e);
+      lastX=p.x;lastY=p.y;lastT=dragStart;
+      // No immediate collapse. The first ~350 ms is a stable tension phase.
+      warpTarget=0;freq=.014;
+      spawn(p.x,p.y,0,0,5,.55);
     });
 
     art.addEventListener('pointermove',e=>{
-      const p=local(e),now=performance.now(),dt=Math.max(8,now-lastT),dx=p.x-lastX,dy=p.y-lastY;
-      const speed=Math.min(42,Math.hypot(dx,dy)/dt*78);
-      const spin=(dx*.8-dy*.35)/36;
-      network.style.transform=`perspective(980px) rotateX(${-p.ny*7.5}deg) rotateY(${p.nx*10}deg) translate3d(${p.nx*12}px,${p.ny*10}px,0) scale(${drag?1.03:1.012})`;
+      const p=local(e),now=performance.now();
+      const dt=Math.max(8,now-lastT),dx=p.x-lastX,dy=p.y-lastY;
+      const segment=Math.hypot(dx,dy);
+      const speed=Math.min(28,segment/dt*66);
+
       if(drag){
-        cumulative=Math.min(520,cumulative+Math.hypot(dx,dy));
-        vortex+=spin;
-        const energy=Math.min(1,cumulative/280+speed/58);
-        warpTarget=Math.min(105,18+energy*86+speed*1.8);
-        freq=.014+energy*.016;
+        dragDistance+=segment;
+        if(dragDistance>7)dragged=true;
+
+        const held=(now-dragStart)/1000;
+        // 0.35 s: almost no distortion.
+        // 0.35–1.55 s: clear, gradual ramp.
+        // after ~1.55 s: maximum deformation becomes available.
+        const timeRamp=smoothstep((held-.35)/1.2);
+        const distanceRamp=smoothstep(dragDistance/360);
+        const speedRamp=clamp(speed/26,0,1);
+        const energy=clamp(timeRamp*(.42+.46*distanceRamp+.12*speedRamp),0,1);
+
+        const rawSpin=(dx*.65-dy*.3)/50;
+        vortex=clamp(vortex+rawSpin*.035,-1.05,1.05);
+
+        warpTarget=energy*(42+28*distanceRamp+12*speedRamp);
+        freq=.014+energy*.009;
         setNodeTransforms(p,energy,{dx,dy,spin:vortex});
-        spawn(p.x,p.y,dx,dy,Math.max(3,Math.round(speed/5)),1.2+energy*1.6);
+
+        // Whole-field movement stays restrained. Most of the drama comes from
+        // internal deformation, not the entire diagram drifting away.
+        network.style.transform=`perspective(1000px) rotateX(${-p.ny*(1.3+energy*1.8)}deg) rotateY(${p.nx*(1.7+energy*2.2)}deg) scale(${(1+energy*.012).toFixed(3)})`;
+
+        if(energy>.08){
+          const count=Math.max(1,Math.round((speed/8)*energy));
+          spawn(p.x,p.y,dx,dy,count,.7+energy*.9);
+        }
       }else{
-        warpTarget=Math.min(10,2+speed*.18);freq=.0145;
-        if(Math.random()<.18)spawn(p.x,p.y,dx,dy,1,.55);
+        // At rest the composition stays put. Pointer-follow is intentionally
+        // tiny and never changes individual node positions.
+        const tiltX=-p.ny*.7,tiltY=p.nx*.9;
+        network.style.transform=`perspective(1000px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg) translate3d(${(p.nx*1.8).toFixed(2)}px,${(p.ny*1.4).toFixed(2)}px,0)`;
+        warpTarget=0;freq=.014;
       }
+
       lastX=p.x;lastY=p.y;lastT=now;
     });
 
     function release(e){
       if(!drag)return;
-      drag=false;art.classList.remove('is-dragging');warpTarget=0;freq=.014;resetTransforms();network.style.transform='';
+      drag=false;
+      suppressClickUntil=performance.now()+220;
+      art.classList.remove('is-dragging');
+      art.classList.add('snap-back');
+
+      // Fast, decisive restoration on release.
+      warp=0;warpTarget=0;freq=.014;
+      disp.setAttribute('scale','0');
+      resetTransforms();
+      network.style.transform='';
+
+      setTimeout(()=>art.classList.remove('snap-back'),170);
       try{art.releasePointerCapture(e.pointerId)}catch{}
     }
+
     art.addEventListener('pointerup',release);
     art.addEventListener('pointercancel',release);
-    art.addEventListener('pointerleave',()=>{if(!drag){warpTarget=0;network.style.transform='';resetTransforms()}});
+    art.addEventListener('pointerleave',()=>{
+      if(!drag){
+        warp=0;warpTarget=0;freq=.014;
+        disp.setAttribute('scale','0');
+        network.style.transform='';
+        resetTransforms();
+      }
+    });
 
     art.addEventListener('click',e=>{
-      if(rebuilding)return;
-      const p=local(e);burst(p,1.25);warpTarget=Math.max(warpTarget,46);setTimeout(()=>{if(!drag)warpTarget=0},180);
+      if(rebuilding||performance.now()<suppressClickUntil||dragged)return;
+      if(clickTimer)clearTimeout(clickTimer);
+      const p=local(e);
+      clickTimer=setTimeout(()=>{
+        burst(p,1);
+        warpTarget=24;
+        setTimeout(()=>{if(!drag){warpTarget=0}},170);
+      },190);
     });
 
     art.addEventListener('dblclick',e=>{
       if(rebuilding)return;
-      rebuilding=true;art.classList.add('is-rebuilding');const p=local(e);burst(p,1.8);warpTarget=120;freq=.026;
+      if(clickTimer){clearTimeout(clickTimer);clickTimer=null}
+      rebuilding=true;
+      art.classList.add('is-rebuilding');
+      const p=local(e);
+      burst(p,1.45);
+      warpTarget=58;freq=.021;
+
       network.animate([
-        {transform:'perspective(980px) scale(1) rotate(0deg)',opacity:1,filter:'blur(0px)'},
-        {offset:.42,transform:'perspective(980px) scale(.14) rotate(26deg)',opacity:.35,filter:'blur(1.6px)'},
-        {offset:.72,transform:'perspective(980px) scale(1.08) rotate(-10deg)',opacity:1,filter:'blur(0px)'},
-        {transform:'perspective(980px) scale(1) rotate(0deg)',opacity:1,filter:'blur(0px)'}
-      ],{duration:920,easing:'cubic-bezier(.22,.84,.24,1)'});
-      setTimeout(()=>{resetTransforms();warpTarget=0;freq=.014;network.style.transform='';art.classList.remove('is-rebuilding');rebuilding=false},930);
+        {transform:'perspective(1000px) scale(1) rotate(0deg)',opacity:1,filter:'blur(0px)'},
+        {offset:.34,transform:'perspective(1000px) scale(.72) rotate(6deg)',opacity:.82,filter:'blur(.4px)'},
+        {offset:.58,transform:'perspective(1000px) scale(.24) rotate(14deg)',opacity:.48,filter:'blur(1px)'},
+        {offset:.8,transform:'perspective(1000px) scale(1.045) rotate(-4deg)',opacity:1,filter:'blur(0px)'},
+        {transform:'perspective(1000px) scale(1) rotate(0deg)',opacity:1,filter:'blur(0px)'}
+      ],{duration:1180,easing:'cubic-bezier(.2,.76,.22,1)'});
+
+      setTimeout(()=>{
+        resetTransforms();
+        warp=0;warpTarget=0;freq=.014;
+        disp.setAttribute('scale','0');
+        network.style.transform='';
+        art.classList.remove('is-rebuilding');
+        rebuilding=false;
+      },1200);
     });
   }
+
   apply();
 })();
