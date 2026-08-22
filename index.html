@@ -2,34 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#f5f6f3" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#eef1f1" />
   <title>NexHero — Independent software & AI laboratory</title>
   <meta name="description" content="NexHero is an independent software and AI laboratory for projects, experiments and long-term ideas." />
   <link rel="canonical" href="https://nexhero.ch/" />
-  <style>
-    :root{--bg:#f5f6f3;--paper:#fbfcfa;--ink:#111417;--muted:#6f777f;--line:#dce1e2;--blue:#4d7cff;--mint:#8adfcb;--shadow:0 24px 70px rgba(20,28,36,.08);--radius:18px}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.45}
-    a{color:inherit;text-decoration:none}button{font:inherit}.shell{width:min(1500px,calc(100% - 32px));margin:16px auto;background:var(--paper);border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
-    header{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(251,252,250,.92);backdrop-filter:blur(18px);z-index:20}.brand{display:flex;align-items:center;gap:12px;font-weight:750;letter-spacing:-.03em}.mark{width:28px;height:28px;border-radius:7px;background:var(--ink);position:relative}.mark:before,.mark:after{content:"";position:absolute;background:white;left:50%;top:50%;transform:translate(-50%,-50%)}.mark:before{width:14px;height:4px}.mark:after{width:4px;height:14px}
-    nav{display:flex;gap:30px;font-size:14px}nav a{color:#31383f}nav a:hover{color:var(--blue)}.actions{display:flex;gap:8px}.icon-btn{border:1px solid var(--line);background:transparent;border-radius:999px;padding:9px 12px;cursor:pointer;color:var(--ink)}.icon-btn:hover{border-color:#bfc8cc;background:white}
-    .hero{display:grid;grid-template-columns:76px 1.05fr 1fr;min-height:580px;border-bottom:1px solid var(--line)}.coords{border-right:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#40474e;font:11px ui-monospace,SFMono-Regular,Menlo,monospace;writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:.08em}.hero-copy{padding:92px 60px 68px}.eyebrow{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--blue);letter-spacing:.16em;text-transform:uppercase;margin-bottom:18px}.hero h1{font-size:clamp(64px,8vw,128px);line-height:.88;margin:0;letter-spacing:-.075em;font-weight:700}.tagline{font-size:clamp(23px,2vw,34px);letter-spacing:-.04em;margin:32px 0 0}.accent-line{width:38px;height:3px;background:var(--blue);margin:34px 0}.intro{max-width:470px;color:var(--muted);font-size:16px}.cta{display:inline-flex;align-items:center;gap:10px;color:var(--blue);margin-top:28px;font-weight:650}.cta span{transition:transform .2s}.cta:hover span{transform:translateX(5px)}
-    .hero-art{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(77,124,255,.025),transparent 45%);min-height:520px}.network{position:absolute;inset:0;width:100%;height:100%}.lab-label{position:absolute;right:36px;bottom:34px;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--blue);letter-spacing:.16em;text-transform:uppercase}.lab-label:before{content:"";display:inline-block;width:7px;height:7px;background:var(--blue);margin-right:10px}
-    .grid{display:grid;grid-template-columns:1.55fr .72fr .73fr}.section{padding:32px;border-right:1px solid var(--line)}.section:last-child{border-right:0}.section-title{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:26px}.section-title h2{font-size:17px;margin:0;font-weight:650;letter-spacing:-.02em}.section-title h2 b{color:var(--blue);font-weight:650}.section-title a{font-size:12px;color:var(--blue)}
-    .projects{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease}.card:hover{transform:translateY(-5px);box-shadow:0 16px 32px rgba(40,56,72,.09);border-color:#c7d0d5}.thumb{height:170px;position:relative;overflow:hidden;background:#14191f}.translator{padding:25px}.mini-window{border:1px solid #343c46;border-radius:10px;background:#0e1217;padding:16px;height:120px;color:#e8edf2}.mini-window strong{font-size:18px}.mini-controls{display:flex;gap:6px;margin:12px 0}.mini-controls i{height:19px;flex:1;border-radius:4px;background:#1b222a;border:1px solid #303944}.mini-button{width:56px;height:16px;border-radius:4px;background:var(--blue);margin-left:auto}.cube{display:grid;place-items:center}.cube svg{width:118px;height:118px}.particles{background:radial-gradient(circle at 20% 30%,rgba(77,124,255,.18) 0 2px,transparent 3px),radial-gradient(circle at 68% 55%,rgba(17,20,23,.14) 0 2px,transparent 3px),linear-gradient(135deg,#f9faf9,#edf1f3)}.particles:after{content:"";position:absolute;inset:36px;border:1px dashed #bdc8ce;transform:rotate(8deg)}.card-body{padding:15px 15px 17px}.code{font:11px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--blue)}.card h3{font-size:16px;margin:8px 0 6px;letter-spacing:-.02em}.card p{color:var(--muted);font-size:13px;min-height:58px;margin:0}.tag{display:inline-block;border-radius:999px;padding:4px 8px;margin-top:12px;font:10px ui-monospace,SFMono-Regular,Menlo,monospace;background:#eaf0ff;color:#315fdc}.tag.mint{background:#e6f8f3;color:#298f79}
-    .note{padding:16px 0;border-top:1px solid var(--line)}.note:first-child{border-top:0;padding-top:0}.note time{font-size:11px;color:#9aa2a8}.note h3{font-size:15px;margin:7px 0 5px}.note p{font-size:13px;color:var(--muted);margin:0}.lab-photo{height:210px;border-radius:12px;background:linear-gradient(180deg,#eff2f2,#dfe4e4);position:relative;overflow:hidden;border:1px solid #d6dddd}.lab-photo:before{content:"BUILD\A MEASURE\A LEARN";white-space:pre;position:absolute;top:44px;left:50%;transform:translateX(-50%);font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:#7d888c;text-align:center}.bench{position:absolute;left:12%;right:12%;bottom:38px;height:42px;border:1px solid #aeb8bb;background:#f8f9f8;box-shadow:0 14px 0 #cdd4d5}.lab-copy{color:var(--muted);font-size:13px;margin:18px 0}.ghost{display:inline-block;border:1px solid var(--mint);color:#318f7c;padding:9px 12px;border-radius:8px;font-size:12px}
-    footer{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:28px 32px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}.elsewhere{display:flex;align-items:center;gap:18px;border:1px solid var(--line);border-radius:999px;padding:10px 16px;background:white}.elsewhere strong{color:var(--ink)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}.dot.blue{background:var(--blue)}.dot.mint{background:#63cbb2}.footer-links{display:flex;gap:18px}
-    @media(max-width:1100px){.hero{grid-template-columns:48px 1fr}.hero-art{grid-column:1/-1;border-top:1px solid var(--line);min-height:330px}.coords{grid-row:1}.hero-copy{padding:70px 42px}.grid{grid-template-columns:1fr}.section{border-right:0;border-bottom:1px solid var(--line)}.projects{grid-template-columns:repeat(3,1fr)}}
-    @media(max-width:760px){.shell{width:100%;margin:0;border-radius:0;border-left:0;border-right:0}.shell header{padding:0 16px;height:66px}.brand .domain{font-size:14px}nav{display:none}.hero{grid-template-columns:1fr}.coords{display:none}.hero-copy{padding:62px 20px 42px}.hero h1{font-size:clamp(54px,18vw,86px)}.tagline{font-size:23px}.hero-art{min-height:280px}.lab-label{right:18px;bottom:18px}.section{padding:24px 18px}.projects{grid-template-columns:1fr}.thumb{height:210px}.card p{min-height:0}.grid{display:block}footer{align-items:flex-start;flex-direction:column}.elsewhere{width:100%;justify-content:space-between}.footer-links{order:3}}
-    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
-  </style>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
 <div class="shell">
   <header>
     <a class="brand" href="#top" aria-label="NexHero home"><span class="mark"></span><span class="domain">nexhero.ch</span></a>
     <nav aria-label="Primary"><a href="#projects" data-en="Projects" data-zh="项目">Projects</a><a href="#notes" data-en="Notes" data-zh="札记">Notes</a><a href="#lab" data-en="Lab" data-zh="实验室">Lab</a><a href="#about" data-en="About" data-zh="关于">About</a></nav>
-    <div class="actions"><button id="lang" class="icon-btn" type="button" aria-label="Switch language">中文</button></div>
+    <button id="lang" class="icon-btn" type="button" aria-label="Switch language">中文</button>
   </header>
 
   <main id="top">
@@ -41,53 +26,56 @@
         <p class="tagline" data-en="Independent software & AI laboratory." data-zh="独立软件与 AI 实验室。">Independent software & AI laboratory.</p>
         <div class="accent-line"></div>
         <p class="intro" data-en="We build useful software, explore AI systems and document ideas worth keeping. Quietly, precisely, for the long term." data-zh="我们构建实用的软件，探索 AI 系统，并记录值得长期保留的想法。安静、精确、长期主义。">We build useful software, explore AI systems and document ideas worth keeping. Quietly, precisely, for the long term.</p>
-        <a class="cta" href="#projects"><span data-en="Explore projects" data-zh="浏览项目">Explore projects</span><span>→</span></a>
+        <a class="cta" href="#projects"><span data-en="Explore projects" data-zh="浏览项目">Explore projects</span><span class="arrow">→</span></a>
       </div>
       <div class="hero-art" aria-hidden="true">
         <svg class="network" viewBox="0 0 700 580" fill="none">
-          <circle cx="360" cy="270" r="138" stroke="#cfd7db" stroke-dasharray="3 6"/><circle cx="360" cy="270" r="73" stroke="#e0e5e8"/>
-          <path d="M40 150L170 245L260 120L360 270L500 110L660 205M90 430L210 330L360 270L470 395L620 315M170 245L210 330L470 395M260 120L500 110L620 315" stroke="#d7dee1"/>
-          <g fill="#4d7cff"><circle cx="40" cy="150" r="3"/><circle cx="170" cy="245" r="3"/><circle cx="260" cy="120" r="3"/><circle cx="500" cy="110" r="3"/><circle cx="660" cy="205" r="3"/><circle cx="90" cy="430" r="3"/><circle cx="210" cy="330" r="3"/><circle cx="470" cy="395" r="3"/><circle cx="620" cy="315" r="3"/></g>
-          <path d="M330 270H390M360 240V300" stroke="#4d7cff" stroke-width="1.5"/><rect x="355" y="265" width="10" height="10" fill="#4d7cff"/>
+          <g class="orbit"><circle cx="360" cy="270" r="154" stroke="#c8d2d8" stroke-dasharray="4 7"/><circle cx="360" cy="116" r="4" fill="#4d7cff"/><circle cx="514" cy="270" r="4" fill="#84dcc8"/><circle cx="360" cy="424" r="4" fill="#4d7cff"/></g>
+          <g class="orbit reverse"><ellipse cx="360" cy="270" rx="218" ry="95" stroke="#d6dee2" transform="rotate(-18 360 270)"/><circle cx="157" cy="340" r="3" fill="#4d7cff"/><circle cx="564" cy="199" r="3" fill="#4d7cff"/></g>
+          <circle cx="360" cy="270" r="77" stroke="#d8e0e3"/>
+          <circle class="pulse" cx="360" cy="270" r="32" fill="#4d7cff" fill-opacity=".035" stroke="#4d7cff" stroke-opacity=".32"/>
+          <path class="dash" d="M38 145L171 236L254 112L360 270L512 105L662 198M78 438L205 331L360 270L481 402L625 317M171 236L205 331L481 402M254 112L512 105L625 317" stroke="#cfd9de"/>
+          <g fill="#4d7cff"><circle cx="38" cy="145" r="3"/><circle cx="171" cy="236" r="3"/><circle cx="254" cy="112" r="3"/><circle cx="512" cy="105" r="3"/><circle cx="662" cy="198" r="3"/><circle cx="78" cy="438" r="3"/><circle cx="205" cy="331" r="3"/><circle cx="481" cy="402" r="3"/><circle cx="625" cy="317" r="3"/></g>
+          <path d="M323 270H397M360 233V307" stroke="#4d7cff" stroke-width="1.5"/><rect x="354" y="264" width="12" height="12" fill="#4d7cff"/>
+          <path d="M104 88H187M104 88V171M616 454H533M616 454V371" stroke="#9fb0ba" stroke-opacity=".35"/>
         </svg>
+        <div class="system-card">SYSTEM <b>ONLINE</b><br>GRID 12 / NODE 09<br>NH-LAB · 2026</div>
         <div class="lab-label">Swiss Future Lab</div>
       </div>
     </section>
 
     <div class="grid">
       <section class="section" id="projects">
-        <div class="section-title"><h2>01 <b>/</b> <span data-en="Projects" data-zh="项目">Projects</span></h2><a href="#" data-en="View all →" data-zh="查看全部 →">View all →</a></div>
+        <div class="section-title"><h2>01 <b>/</b> <span data-en="Projects" data-zh="项目">Projects</span></h2><a href="#projects" data-en="View all →" data-zh="查看全部 →">View all →</a></div>
         <div class="projects">
           <article class="card"><div class="thumb translator"><div class="mini-window"><strong>AI Translator</strong><div class="mini-controls"><i></i><i></i></div><div class="mini-button"></div></div></div><div class="card-body"><span class="code">NH-001</span><h3 data-en="AI Translator Desktop" data-zh="AI 桌面翻译器">AI Translator Desktop</h3><p data-en="A placeholder for a local-first translation project and future release notes." data-zh="本地优先翻译项目及未来版本记录的占位展示。">A placeholder for a local-first translation project and future release notes.</p><span class="tag">SOFTWARE</span></div></article>
-          <article class="card"><div class="thumb cube"><svg viewBox="0 0 120 120" fill="none"><path d="M60 10L105 35V85L60 110L15 85V35L60 10ZM60 10V60M105 35L60 60L15 35M60 60V110" stroke="#8adfcb"/><path d="M38 23L82 48V72L38 97V47L82 23V97" stroke="#4d7cff" opacity=".5"/></svg></div><div class="card-body"><span class="code">NH-002</span><h3 data-en="Open Source" data-zh="开源">Open Source</h3><p data-en="Useful libraries, small tools and transparent experiments will live here." data-zh="这里将放置实用库、小工具与透明的实验项目。">Useful libraries, small tools and transparent experiments will live here.</p><span class="tag mint">OPEN SOURCE</span></div></article>
+          <article class="card"><div class="thumb cube"><svg viewBox="0 0 120 120" fill="none"><path d="M60 10L105 35V85L60 110L15 85V35L60 10ZM60 10V60M105 35L60 60L15 35M60 60V110" stroke="#84dcc8"/><path d="M38 23L82 48V72L38 97V47L82 23V97" stroke="#4d7cff" opacity=".55"/></svg></div><div class="card-body"><span class="code">NH-002</span><h3 data-en="Open Source" data-zh="开源">Open Source</h3><p data-en="Useful libraries, small tools and transparent experiments will live here." data-zh="这里将放置实用库、小工具与透明的实验项目。">Useful libraries, small tools and transparent experiments will live here.</p><span class="tag mint">OPEN SOURCE</span></div></article>
           <article class="card"><div class="thumb particles"></div><div class="card-body"><span class="code">NH-003</span><h3 data-en="Experiments" data-zh="实验">Experiments</h3><p data-en="Unfinished ideas, prototypes and research notes from the edge of the workbench." data-zh="工作台边缘那些尚未完成的想法、原型与研究记录。">Unfinished ideas, prototypes and research notes from the edge of the workbench.</p><span class="tag">RESEARCH</span></div></article>
         </div>
       </section>
 
       <section class="section" id="notes">
-        <div class="section-title"><h2>02 <b>/</b> <span data-en="Notes" data-zh="札记">Notes</span></h2><a href="#" data-en="Archive →" data-zh="归档 →">Archive →</a></div>
+        <div class="section-title"><h2>02 <b>/</b> <span data-en="Notes" data-zh="札记">Notes</span></h2><a href="#notes" data-en="Archive →" data-zh="归档 →">Archive →</a></div>
         <article class="note"><time>2026 · 08</time><h3 data-en="On building reliable AI systems" data-zh="关于构建可靠的 AI 系统">On building reliable AI systems</h3><p data-en="Reliability is a property of systems, not slogans." data-zh="可靠性属于系统，而不是口号。">Reliability is a property of systems, not slogans.</p></article>
         <article class="note"><time>2026 · 08</time><h3 data-en="The value of local-first software" data-zh="本地优先软件的价值">The value of local-first software</h3><p data-en="Fast, private and pleasantly boring infrastructure." data-zh="快速、私密，以及令人安心地无聊的基础设施。">Fast, private and pleasantly boring infrastructure.</p></article>
         <article class="note"><time>2026 · 08</time><h3 data-en="Simplicity in a complex world" data-zh="复杂世界里的简单">Simplicity in a complex world</h3><p data-en="Good interfaces hide complexity without pretending it does not exist." data-zh="好的界面隐藏复杂性，但从不假装复杂性不存在。">Good interfaces hide complexity without pretending it does not exist.</p></article>
       </section>
 
       <section class="section" id="lab">
-        <div class="section-title"><h2>03 <b>/</b> <span data-en="Lab" data-zh="实验室">Lab</span></h2><a href="#" data-en="Enter →" data-zh="进入 →">Enter →</a></div>
+        <div class="section-title"><h2>03 <b>/</b> <span data-en="Lab" data-zh="实验室">Lab</span></h2><a href="#lab" data-en="Enter →" data-zh="进入 →">Enter →</a></div>
         <div class="lab-photo"><div class="bench"></div></div>
         <p class="lab-copy" data-en="The lab is where prototypes get built, measured, broken and rebuilt. Placeholder experiments will appear here over time." data-zh="实验室用于构建、测量、拆解并重新构建原型。未来的实验项目会逐渐出现在这里。">The lab is where prototypes get built, measured, broken and rebuilt. Placeholder experiments will appear here over time.</p>
-        <a class="ghost" href="#" data-en="Explore the lab" data-zh="探索实验室">Explore the lab</a>
+        <a class="ghost" href="#lab" data-en="Explore the lab" data-zh="探索实验室">Explore the lab</a>
       </section>
     </div>
   </main>
 
   <footer id="about">
     <div><strong style="color:var(--ink)">NEXHERO</strong><br><span data-en="Independent. Swiss. Global." data-zh="独立 · 瑞士 · 全球">Independent. Swiss. Global.</span></div>
-    <div class="footer-links"><a href="#" data-en="Privacy" data-zh="隐私">Privacy</a><a href="mailto:hello@nexhero.ch" data-en="Contact" data-zh="联系">Contact</a></div>
+    <div class="footer-links"><a href="#about" data-en="Privacy" data-zh="隐私">Privacy</a><a href="mailto:hello@nexhero.ch" data-en="Contact" data-zh="联系">Contact</a></div>
     <div class="elsewhere"><strong data-en="Elsewhere" data-zh="其他站点">Elsewhere</strong><a href="https://nexjoy.nl/"><span class="dot blue"></span>NEXJOY ↗</a><a href="https://dorogogo.de/"><span class="dot mint"></span>DOROGOGO ↗</a></div>
   </footer>
 </div>
-<script>
-(()=>{const btn=document.getElementById('lang');const nodes=[...document.querySelectorAll('[data-en]')];let lang=localStorage.getItem('nexhero-lang')||((navigator.language||'').toLowerCase().startsWith('zh')?'zh':'en');function apply(){document.documentElement.lang=lang==='zh'?'zh-CN':'en';nodes.forEach(el=>el.textContent=el.dataset[lang]);btn.textContent=lang==='zh'?'EN':'中文';document.title=lang==='zh'?'NexHero — 独立软件与 AI 实验室':'NexHero — Independent software & AI laboratory';localStorage.setItem('nexhero-lang',lang)}btn.addEventListener('click',()=>{lang=lang==='zh'?'en':'zh';apply()});apply()})();
-</script>
+<script src="/script.js"></script>
 </body>
 </html>
